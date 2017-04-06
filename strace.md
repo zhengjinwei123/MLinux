@@ -73,5 +73,8 @@ qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value�
 > `strace -T -c -p 10045`
  然后按`ctrl+c`中断跟踪即可打印跟踪信息
 
-2. 打印当前的系统调用
+2. 打印当前的系统调用信息
 > `strace -p 10045`
+
+3. 跟踪指定命令
+> `strace cat /dev/null`
