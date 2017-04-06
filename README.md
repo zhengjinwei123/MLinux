@@ -1,2 +1,3 @@
-# MLinux
-寻觅linux与运维管理
+# MLinux linux命令与运维管理
+
+* [strace](https://github.com/zhengjinwei123/MLinux/blob/master/strace.md)
