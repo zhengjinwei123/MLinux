@@ -1,5 +1,5 @@
 # dstat
-> dstat 是可以去掉vmstat,iostat,netstat,ifstat的多功能软件，可以方便监控系统的状态和排除故障。
+> dstat 是可以取代vmstat,iostat,netstat,ifstat的多功能软件，可以方便监控系统的状态和排除故障。
 > dstat 可以让你实时查看到所有系统资源，比如磁盘io,网络io，cpu使用率，内存状态等
 > dstat 以列表的形式展示数据，清晰明了。
 > dstat 有导出数据到csv文件的命令，很简单地生成表格。
