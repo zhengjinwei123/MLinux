@@ -43,3 +43,4 @@ dstat        综合工具，综合了 vmstat, iostat, ifstat, netstat 等多个�
 3. [vmstat](https://github.com/zhengjinwei123/MLinux/blob/master/vmstat.md)
 4. [iostat](https://github.com/zhengjinwei123/MLinux/blob/master/iostat.md)
 5. [dstat](https://github.com/zhengjinwei123/MLinux/blob/master/dstat.md)
+6. [iftop](https://github.com/zhengjinwei123/MLinux/blob/master/iftop.md)
