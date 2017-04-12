@@ -16,6 +16,21 @@
 (1)转发代理的内部是客户端，而反向代理的内部是服务器。即内网的客户端通过转发代理服务器访问外部网络，而外部的用户通过反向代理访问内部的服务器。
 (2)转发代理通常接受客户端发送的任何请求，而反向代理通常只接受到指定服务器的请求。如校园网内部用户可以通过转发代理访问国外的任何站点(如果不加限制的话)，而只有特定的请求才发往反向代理，然后又反向代理发往内部服务器。
 
+## 安装
+```` shell
+sudo yum install nginx pcre perl pcre-devel zlib zlib-devel
+````
+
+### 启动
+````
+## sysvinit或者UpStart
+$ sudo chkconfig nginx on
+$ sudo service nginx start
+## systemd
+$ sudo systemctl enable nginx.service
+$ sudo systemctl start nginx.service
+````
+
 
 ### 2.nginx 基本配置说明
 ``` shell
@@ -30,6 +45,12 @@ worker_rlimit_nofile 65535;# 一个nginx进程打开的最多文件描述符数�
 events {
     use epoll;# 事件并发类型[kqueue|epoll|select|poll|/dev/poll|rtsig] epoll 是linux 2.6以上版本内核中高性能的网络io模型，如果在freebsd上，就用kqueue模型
     worker_connections  65535;#单个进程最大连接数(最大连接数=连接数*进程数)
+
+
+    # http 1.1协议下，由于浏览器默认使用两个并发连接
+    # 作为http服务器时：max_clients=worker_processes * worker_connections / 2
+    # 作为反向代理服务器时: max_clients = worker_processes * worker_connections / 4 (nginx需要同时维持客户端和后端的连接)
+    # 并发受IO约束，max_clients要小于系统可以打开的最大文件数。系统可以打开的最大文件数和内存大小成正比 cat /proc/sys/fs/file-max
 }
 
 
@@ -111,3 +132,230 @@ server {
     }
 }
 ```
+
+# 使用
+### Nginx fastcgi转发
+
+````
+server {
+    listen       7000;
+    server_name  localhost;
+
+    location / {
+        # 服务器的默认网站根目录位置
+        root /website/;
+        # 首页索引文件的名称
+        index index.php index.html index.htm;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root  ./html;
+    }
+    location ~ \.php$ {
+        root           html;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /website$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+````
+
+### Nginx 端口转发/反向代理
+
+````
+server {
+    # 虚拟主机监听的端口
+    listen       80;
+    # 自定义域名访问
+    server_name  www.**.com **.com;
+
+    access_log  /var/log/nginx/official.access.log  main;
+
+    location / {
+        proxy_redirect          off;
+        # 转发路径
+        proxy_pass              http://127.0.0.1:8080/;
+        # 设置主机头和客户端真实地址，以便服务器获取客户端真实IP
+        proxy_set_header        X-Real-IP               $remote_addr;
+        proxy_set_header        X-Forwarded-For         $proxy_add_x_forwarded_for;
+        # 反向代理配置
+        proxy_set_header        Host                    $host;
+
+        #允许客户端请求的最大单文件字节数
+        client_max_body_size 10m;
+        #缓冲区代理缓冲用户端请求的最大字节数
+        client_body_buffer_size 128k;
+        #nginx跟后端服务器连接超时时间(代理连接超时)
+        proxy_connect_timeout 90;
+        #后端服务器数据回传时间(代理发送超时)
+        proxy_send_timeout 90;
+        #连接成功后，后端服务器响应时间(代理接收超时)
+        proxy_read_timeout 90;
+        #设置代理服务器（nginx）保存用户头信息的缓冲区大小
+        proxy_buffer_size 4k;
+        #proxy_buffers缓冲区，网页平均在32k以下的设置
+        proxy_buffers 4 32k;
+        #高负荷下缓冲大小（proxy_buffers*2）
+        proxy_busy_buffers_size 64k;
+        #设定缓存文件夹大小，大于这个值，将从upstream服务器传
+        #proxy_temp_file_write_size 64k;
+        #proxy_cache cache_one;
+        #proxy_cache_valid 200 302 1h;
+        #proxy_cache_valid 301 1d;
+        #proxy_cache_valid any 5m;
+        #expires 10d;
+    }
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}
+````
+
+### Nginx 负载均衡
+
+````
+upstream backend {
+    # upstream的负载均衡，weight是权重，权值越高被分配到的几率越大
+    server 192.168.2.1:8000 weight=3;
+    # 每个请求按照ip的hash结果分配，每个访客可以固定一个后端，可以解决session问题
+    ip_hash;
+    server 192.168.2.2:8000;
+    server 192.168.2.3:8000;
+}
+
+server {
+    listen      80;
+    server_name www.***.com;
+
+    location / {
+        proxy_pass  localhost://backend;
+    }
+}
+````
+
+### Nginx 重定向
+
+````
+rewrite ^([^\.]*)/topic-(.+)\.html$ $1/portal.php?mod=topic&topic=$2 last;
+rewrite ^([^\.]*)/article-([0-9]+)-([0-9]+)\.html$ $1/portal.php?mod=view&aid=$2&page=$3 last;
+if (!-e $request_filename) {
+       return 404;
+}
+````
+
+### Nginx 静态资源
+
+````
+location ~* ^.+.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt)$ {
+        root              /website/;
+        access_log        off;
+        expires           max;
+}
+````
+
+### 获取真实IP
+经过多层代理后，http后中记录为X-Forwarded-For :  用户IP, 代理服务器1-IP, 代理服务器2-IP, 代理服务器3-IP,
+
+````
+map $http_x_forwarded_for  $clientRealIp {
+    ## 没有通过代理，直接用 remote_addr
+	""	$remote_addr;
+    ## 用正则匹配，从 x_forwarded_for 中取得用户的原始IP
+    ## 例如   X-Forwarded-For: 202.123.123.11, 208.22.22.234, 192.168.2.100,...
+    ## 这里第一个 202.123.123.11 是用户的真实 IP，后面其它都是经过的 CDN 服务器
+	~^(?P&lt;firstAddr&gt;[0-9\.]+),?.*$	$firstAddr;
+}
+
+## 通过 map 指令，我们为 nginx 创建了一个变量 $clientRealIp ，这个就是 原始用户的真实 IP 地址，
+## 不论用户是直接访问，还是通过一串 CDN 之后的访问，我们都能取得正确的原始IP地址
+````
+
+### 测试获取客户端地址
+
+````
+server {
+	listen   80;
+        server_name  www.bzfshop.net;
+
+        ## 当访问 /nginx-test 的时候，输出 $clientRealIp 变量
+        ## 浏览器访问时会弹出下载文件
+        location /nginx-test {
+                echo $clientRealIp;
+        }
+}
+````
+
+### 限制客户端并发请求
+
+每个地址并发连接数为1
+
+````
+http {
+    limit_zone one  $binary_remote_addr  10m;
+
+    server {
+        limit_conn one 1;
+    }
+}
+````
+
+rate=1r/s，每个地址每秒只能通过一次请求；
+burst=120，根据漏桶(leaky bucket)原理，请求超过rate定义的速率时，需要延时处理的请求数为120(排队)，超过120请求就会返回503。
+nodelay，不延迟请求，要么被处理，要么返回503。此时允许瞬时并发为(burst + rate*time -1)
+
+````
+http {
+    limit_req_zone  $binary_remote_addr  zone=req_one:10m rate=1r/s;
+
+    server {
+        limit_req   zone=req_one  burst=120;
+        #limit_req   zone=req_one  burst=120 nodelay;
+    }
+}
+````
+
+### Nginx 记录post请求数据
+
+nginx除了在proxy_pass或fastcgi_pass的Location中读取request_body外，其他地方都不会读取post数据。
+
+借助ngx_lua模块，在输出log前读取request_body
+
+````
+location /test {
+    lua_need_request_body on;
+    content_by_lua 'local s = ngx.var.request_body';
+    ...
+}
+
+````
+
+访问NginX内置变量ngx.var.request_body(由于 NginX 默认在处理请求前不自动读取request body，所以目前必须显式借助form-input-nginx模块才能从该变量得到请求体，否则该变量内容始终为空)
+
+### HTTP/2 协议
+
+````
+server {
+        server_name domain.com www.domain.com;
+        listen 443 ssl http2 default_server;
+        root /var/www/html;
+        index index.html;
+        location / {
+                try_files $uri $uri/ =404;
+        }
+        ssl_certificate /etc/nginx/ssl/domain.com.crt;
+        ssl_certificate_key /etc/nginx/ssl/domain.com.key;
+}
+server {
+       listen         80;
+       server_name    domain.com www.domain.com;
+       return         301 https://$server_name$request_uri;
+}
+````
