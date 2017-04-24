@@ -9,6 +9,7 @@
 * [stat 性能优化和数据统计](https://github.com/zhengjinwei123/MLinux/blob/master/stat.md)
 * [ssh 相关](https://github.com/zhengjinwei123/MLinux/blob/master/ssh.md)
 * [ip地址和网络](https://github.com/zhengjinwei123/MLinux/blob/master/ip.md)
+* [网络安全加密](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt.md)
 
 
 ### 学习资料
