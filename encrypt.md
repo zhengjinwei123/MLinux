@@ -74,6 +74,6 @@ MD5的典型应用是对一段Message(字节串)产生fingerprint(指纹)，以�
 ### API 实例
 > 下面是 `php` 和 `nodejs` 实现各种加密算法的案例
 
-#### [php 加密案例](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt/demo.php)
-#### [nodejs 加密案例](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt/demo.js)
+#### [php 加密案例](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt/demon.php)
+#### [nodejs 加密案例](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt/demon.js)
 
