@@ -286,3 +286,74 @@ console.log(/wo/.exec(str)); // null
 ##### 参考资料
 [资料1](http://www.cnblogs.com/tugenhua0707/p/5037811.html)</br>
 [资料2](http://www.cnblogs.com/yirlin/archive/2006/04/12/373222.html)
+
+
+## 常用正则表达式
+1.手机号
+
+``` javascript
+//验证规则：11位数字，以1开头
+function checkMobile(str) {
+    var re = /^1\d{10}$/
+    if (re.test(str)) {
+        alert("正确");
+    } else {
+        alert("错误");
+    }
+}
+checkMobile('13566668888'); //调用
+checkMobile('136888856565');//错误示例
+```
+
+2.电话号
+
+``` javascript
+验证规则：区号+号码，区号以0开头，3位或4位
+号码由7位或8位数字组成
+区号与号码之间可以无连接符，也可以“-”连接
+如01088888888,010-88888888,0955-7777777
+
+function checkPhone(str){
+    var re = /^0\d{2,3}-?\d{7,8}$/;
+    if(re.test(str)){
+        alert("正确");
+    }else{
+        alert("错误");
+    }
+}
+checkPhone("0556-4855523");//调用
+```
+
+3.邮箱
+
+``` javascript
+验证规则：姑且把邮箱地址分成“第一部分@第二部分”这样
+第一部分：由字母、数字、下划线、短线“-”、点号“.”组成，
+第二部分：为一个域名，域名由字母、数字、短线“-”、域名后缀组成，
+而域名后缀一般为.xxx或.xxx.xx，一区的域名后缀一般为2-4位，如cn,com,net，现在域名有的也会大于4位
+
+function checkEmail(str){
+    var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+    if(re.test(str)){
+        alert("正确");
+    }else{
+        alert("错误");
+    }
+}
+checkEmail("253333@qq.com");//调用
+```
+
+4.账号
+
+``` javascript
+//验证规则：字母、数字、下划线组成，字母开头，4-16位。
+function checkUser(str){
+    var re = /^[a-zA-z]\w{3,15}$/;
+    if(re.test(str)){
+        alert("正确");
+    }else{
+        alert("错误");
+    }
+}
+checkUser("zaasasa");//调用
+```
