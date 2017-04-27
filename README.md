@@ -10,6 +10,7 @@
 * [ssh 相关](https://github.com/zhengjinwei123/MLinux/blob/master/ssh.md)
 * [ip地址和网络](https://github.com/zhengjinwei123/MLinux/blob/master/ip.md)
 * [网络安全加密](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt.md)
+* [正则表达式 探秘](https://github.com/zhengjinwei123/MLinux/blob/master/regExp.md)
 
 
 ### 学习资料
