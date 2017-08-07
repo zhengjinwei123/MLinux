@@ -38,3 +38,20 @@ echo 今日凌晨的时间戳:${t1}
 echo 20天前的时间戳:${t20}
 echo 20天前的日期:`date -d @${t20} "+%Y-%m-%d $H:%M:%S"`
 
+
+### 获取本机ip地址
+ipaddress=`ifconfig | awk '/inet/{print substr($2,1)}' | grep -v "127.0.0.1" | grep "^192"`
+echo 本机地址:$ipaddress
+
+
+## 数组操作
+arr=(1 2 3 4 5 6 7 8)
+arrLen=${#arr[@]}
+echo 第二个数是：${arr[1]}
+
+arr[1]=20
+
+for v in ${arr[@]}
+do 
+    echo $v
+done
