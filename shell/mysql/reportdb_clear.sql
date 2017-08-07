@@ -1,0 +1,2 @@
+SET @tm = UNIX_TIMESTAMP(NOW()) - 86400*40;
+DELETE FROM t_student WHERE UNIX_TIMESTAMP(`savetime`)<=@tm;
