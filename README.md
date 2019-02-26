@@ -12,7 +12,7 @@
 * [网络安全加密](https://github.com/zhengjinwei123/MLinux/blob/master/encrypt.md)
 * [正则表达式 探秘](https://github.com/zhengjinwei123/MLinux/blob/master/regExp.md)
 * [vmware 共享文件夹](https://github.com/zhengjinwei123/MLinux/blob/master/vmware.md)
-
+* [visual studio code 智能提示](https://github.com/zhengjinwei123/MLinux/blob/master/vscode_help.md)
 
 ### 学习资料
 1. [linux die.net](https://linux.die.net/)
