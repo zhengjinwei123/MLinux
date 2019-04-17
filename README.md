@@ -5,7 +5,7 @@
 * [netstat 网络调试器](https://github.com/zhengjinwei123/MLinux/blob/master/netstat.md)
 * [php 相关](https://github.com/zhengjinwei123/MLinux/blob/master/php7.md)
 * [php-opcache php加速](https://github.com/zhengjinwei123/MLinux/blob/master/php-opcache.md)
-* [nginx 配置](https://github.com/zhengjinwei123/MLinux/blob/master/nginx-conf.md)
+* [nginx 配置](https://github.com/zhengjinwei123/MLinux/tree/master/nginx)
 * [stat 性能优化和数据统计](https://github.com/zhengjinwei123/MLinux/blob/master/stat.md)
 * [ssh 相关](https://github.com/zhengjinwei123/MLinux/blob/master/ssh.md)
 * [ip地址和网络](https://github.com/zhengjinwei123/MLinux/blob/master/ip.md)
