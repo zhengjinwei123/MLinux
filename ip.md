@@ -81,6 +81,35 @@ IPV6_PEERDNS=yes
 IPV6_PEERROUTES=yes
 
 ```
+
+``` bash
+TYPE=Ethernet
+
+BOOTPROTO=static
+IPADDR=192.168.13.243
+NETMASK=255.255.255.0
+GATEWAY=192.168.13.1
+DNS1=223.5.5.5
+DNS2=119.29.29.29
+
+DEFROUTE=yes
+PEERDNS=yes
+PEERROUTES=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_PEERDNS=yes
+IPV6_PEERROUTES=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=ens32
+UUID=6fde0adc-cb7c-4e82-9d1d-ec786b89cb52
+DEVICE=ens32
+ONBOOT=yes
+ZONE=public
+```
+
 ##### 再执行:
 `/etc/init.d/network reload ` 或者 `service network restart` 重启网卡 ，
 命令有start | restart | stop | reload
