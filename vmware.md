@@ -10,5 +10,5 @@
 7. 重启centos
 8. 之后我们就能在/mnt/hgfs/下看到共享的文件了
 9. 如果看不到文件夹，使用命令挂载:(server-share是第6步中挂载的文件夹名称)
-  sudo vmhgfs-fuse .host:/server-share /mnt/hgfs/server-share -o allow_other
+  sudo vmhgfs-fuse .host:/server-share /mnt/hgfs/server-share -o allow_other -o nonempty
 ```
